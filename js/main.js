@@ -7,16 +7,28 @@
 const Calculator = {
   "availableKeys": ["1","2","3","4","5","6","7","8","9","0","*","/","-","+","=","."],
   "calcWindow": () => document.querySelector('.window-panel'),
-  "+": (a,b) => +a + +b,
-  "-": (a,b) => +a - +b,
-  "*": (a,b) => +a * +b,
-  "/": (a,b) => +a / +b,
+  "operations":{
+    "+": (a,b) => +a + +b,
+    "-": (a,b) => +a - +b,
+    "*": (a,b) => +a * +b,
+    "/": (a,b) => +a / +b,
+  },
+  "solve": () => {
+    const operations = Object.keys(Calculator.operations)
+    let equation = Calculator.calcWindow().innerText;
+    let answer = '';
+
+    for (operation in Calculator.operations) {
+      if (equation.includes(operation)){
+        equation = equation.split(`${operation}`)
+        answer = Calculator.operations[operation](...equation)
+        console.log(operation, equation, answer);
+      }
+      Calculator.calcWindow().innerText = answer;
+    }
+  }
 }
 
-// const allowedKeys = ["1","2","3","4","5","6","7","8","9","0","*","/","-","+","=","."]
-
-// give ability to use keys
-// let calcWindow = document.querySelector('.window-panel');
 
 window.addEventListener("keydown", function(e){
   e.preventDefault();
@@ -33,10 +45,7 @@ window.addEventListener("keydown", function(e){
 
     // enter the key presses into window as strings.
     if (keyPressed === '='){
-      // solve the equation
-      const equation = Calculator.calcWindow().innerText.split('');
-      const answer = Calculator[`${equation[1]}`](equation[0],equation[2])
-      Calculator.calcWindow().innerText = answer;
+      Calculator.solve();
     } else {
       Calculator.calcWindow().innerText += keyPressed;
     }
